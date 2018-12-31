@@ -31,7 +31,7 @@ app.set('views', __dirname + '/views'); //path for views
 app.set('view engine', 'jade');
 
 //Mongodb databse connection
-mongoose.connect('mongodb://localhost/test');
+mongoose.connect(process.env.MONGODB_URI || process.env.MONGOLAB_URI);
 mongoose.connection.on('error',function (err) {
   console.log('Mongoose default connection error: ' + err);
 });
@@ -47,10 +47,10 @@ app.use(session({ //creates session, saved to by passport and flash
     resave: true,
     saveUninitialized: true,
     secret: process.env.SESSION_SECRET,
-    // store: new MongoStore({
-    //     url: process.env.MONGODB_URI || process.env.MONGOLAB_URI,
-    //     autoReconnect: true
-    // })
+    store: new MongoStore({
+        url: process.env.MONGODB_URI || process.env.MONGOLAB_URI,
+        autoReconnect: true
+    })
 }));
 app.use(passport.initialize());
 app.use(passport.session());
